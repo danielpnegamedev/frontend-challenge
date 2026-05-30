@@ -37,6 +37,11 @@ export const AmountBtn = styled.button`
   cursor: pointer;
   padding: 0;
   line-height: 1;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 `;
 
 export const AmountValue = styled.div`
@@ -73,17 +78,42 @@ export const BetValueBtn = styled.button`
     background: white;
     color: black;
   }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    border-color: rgba(255,255,255,0.4);
+  }
 `;
 
-export const PlaceBetBtn = styled.button`
+export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'cashout' | 'waiting' }>`
   margin-left: 16px;
   width: 180px;
-  height: 50px;
-  background: #39ff14;
-  color: black;
+  height: 70px;
   border: none;
   border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+  background: ${({ variant }) =>
+    variant === 'place' ? '#39ff14' :
+    variant === 'cancel' ? '#ff4d4d' :
+    variant === 'cashout' ? '#ffd700' : '#9e9ea0'};
+  color: ${({ variant }) => (variant === 'waiting' ? '#666' : 'black')};
+  opacity: ${({ variant }) => (variant === 'waiting' ? 0.7 : 1)};
+  pointer-events: ${({ variant }) => (variant === 'waiting' ? 'none' : 'auto')};
+`;
+
+export const PlaceBetLabel = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+`;
+
+export const PlaceBetAmount = styled.div`
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 4px;
 `;
