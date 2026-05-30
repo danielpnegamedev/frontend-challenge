@@ -19,7 +19,7 @@ export const Content = styled.div`
   flex: 1;
 
   display: flex;
-  gap: 8px;
+  gap: 10px;
 
   padding: 8px;
 `;
@@ -39,7 +39,7 @@ export const GameArea = styled.div`
 `;
 
 export const BetsPanel = styled.div`
-  width: 220px;
+  width: 300px;
   background: #4b3a7a;
 `;
 

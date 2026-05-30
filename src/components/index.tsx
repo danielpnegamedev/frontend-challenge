@@ -2,7 +2,7 @@ import * as S from "./styles";
 
 import { Crash } from "./Crash";
 import { Controls } from "./Controls";
-
+import { Table }  from "./Table";
 
 export function Layout() {
   return (
@@ -12,7 +12,10 @@ export function Layout() {
       <S.Header />
 
       <S.Content>
-        <S.BetsPanel/>  
+      
+        <S.BetsPanel>
+          <Table />
+        </S.BetsPanel>
           
         <S.GameArea>  
                 <Crash />

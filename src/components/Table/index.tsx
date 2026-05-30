@@ -1,27 +1,43 @@
-import * as S from "./styles";
+import * as S from "./styles"; 
 
-export function BetControls() {
-  // Dica profissional: Estados de controle de valor entrariam aqui futuramente
-  // const [amount, setAmount] = useState(1.00);
-
+export function Table() {
   return (
-    <S.Wrapper>
-      <S.LeftControls>
-        <S.AmountSelector>
-          <S.AmountBtn>-</S.AmountBtn>
-          <S.AmountValue>$1.00</S.AmountValue>
-          <S.AmountBtn>+</S.AmountBtn>
-        </S.AmountSelector>
+    <S.TableContainer>
+      <S.StyledTable>
+        
+        <S.TableHead>
+          <S.TableRow>
+            <S.TableHeaderCell>User</S.TableHeaderCell>
+            <S.TableHeaderCell>Bet USD</S.TableHeaderCell>
+            <S.TableHeaderCell>Multiplier</S.TableHeaderCell>
+            <S.TableHeaderCell>Bet</S.TableHeaderCell>
+          </S.TableRow>
+        </S.TableHead>
 
-        <S.BetValuesGrid>
-          <S.BetValueBtn>$1</S.BetValueBtn>
-          <S.BetValueBtn>$5</S.BetValueBtn>
-          <S.BetValueBtn>$10</S.BetValueBtn>
-          <S.BetValueBtn>$20</S.BetValueBtn>
-        </S.BetValuesGrid>
-      </S.LeftControls>
+        <tbody>
+          <S.TableRow>
+            <S.TableCell>User_01</S.TableCell>
+            <S.TableCell>14:32</S.TableCell>
+            <S.TableCell>R$ 10,00</S.TableCell>
+            <S.TableCell>2.00x</S.TableCell>
+          </S.TableRow>
 
-      <S.PlaceBetBtn>BET</S.PlaceBetBtn>
-    </S.Wrapper>
+          <S.TableRow>
+            <S.TableCell>User_02</S.TableCell>
+            <S.TableCell>14:31</S.TableCell>
+            <S.TableCell>R$ 50,00</S.TableCell>
+            <S.TableCell>1.50x</S.TableCell>
+          </S.TableRow>
+
+          <S.TableRow>
+            <S.TableCell>User_03</S.TableCell>
+            <S.TableCell>14:30</S.TableCell>
+            <S.TableCell>R$ 5,00</S.TableCell>
+            <S.TableCell>10.00x</S.TableCell>
+          </S.TableRow>
+        </tbody>
+
+      </S.StyledTable>
+    </S.TableContainer>
   );
 }
