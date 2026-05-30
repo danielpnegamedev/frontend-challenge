@@ -73,7 +73,8 @@ const BetControls = styled.div`
 `;
 
 const PlaceBetBtn = styled.button`
-  width: 150px;
+  margin-left: 16px;
+  width: 180px;
   height: 50px;
 
   background: #39ff14;
@@ -98,16 +99,23 @@ const BetValueBtn = styled.button`
   width: 60px;
   height: 20px;
 
-  background: #39ff14;
-  color: black;
+  background: transparent;
+  color: white;
 
-  border: none;
+  border: 1px solid white;
   border-radius: 8px;
 
   font-size: 18px;
   font-weight: bold;
 
   cursor: pointer;
+
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: white;
+    color: black;
+  }
 `;
 
 
@@ -129,10 +137,10 @@ export function Layout() {
       <BottomPanel>
         <BetControls >
            <BetValuesGrid>
-              <BetValueBtn>0</BetValueBtn>
-              <BetValueBtn>1</BetValueBtn>
-              <BetValueBtn>2</BetValueBtn>
-              <BetValueBtn>3</BetValueBtn>
+              <BetValueBtn> $1 </BetValueBtn>
+              <BetValueBtn> $5 </BetValueBtn>
+              <BetValueBtn> $10 </BetValueBtn>
+              <BetValueBtn> $20 </BetValueBtn>
   </BetValuesGrid>
             <PlaceBetBtn> BET </PlaceBetBtn>
          </BetControls>
