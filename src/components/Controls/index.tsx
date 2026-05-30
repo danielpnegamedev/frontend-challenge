@@ -79,20 +79,22 @@ export function Controls() {
     buttonStatus === 'cashout' ? 'CASHOUT' :
     'WAITING...';
 
+  const isBettingPhase = buttonStatus === 'placebet' || buttonStatus === 'cancel';
+
   return (
     <S.Wrapper>
       <S.LeftControls>
         <S.AmountSelector>
-          <S.AmountBtn type="button" onClick={() => changeAmount(-0.5)}>-</S.AmountBtn>
-          <S.AmountValue>{formatMoney(amount)}</S.AmountValue>
-          <S.AmountBtn type="button" onClick={() => changeAmount(0.5)}>+</S.AmountBtn>
+          <S.AmountBtn type="button" onClick={() => changeAmount(-0.5)} disabled={!isBettingPhase}>-</S.AmountBtn>
+          <S.AmountValue disabled={!isBettingPhase}>{formatMoney(amount)}</S.AmountValue>
+          <S.AmountBtn type="button" onClick={() => changeAmount(0.5)} disabled={!isBettingPhase}>+</S.AmountBtn>
         </S.AmountSelector>
 
         <S.BetValuesGrid>
-          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(1)}>$1</S.BetValueBtn>
-          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(5)}>$5</S.BetValueBtn>
-          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(10)}>$10</S.BetValueBtn>
-          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(20)}>$20</S.BetValueBtn>
+          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(1)} disabled={!isBettingPhase}>$1</S.BetValueBtn>
+          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(5)} disabled={!isBettingPhase}>$5</S.BetValueBtn>
+          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(10)} disabled={!isBettingPhase}>$10</S.BetValueBtn>
+          <S.BetValueBtn type="button" onClick={() => selectPresetAmount(20)} disabled={!isBettingPhase}>$20</S.BetValueBtn>
         </S.BetValuesGrid>
       </S.LeftControls>
 
