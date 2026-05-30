@@ -1,0 +1,20 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background: #2b1d53;
+  color: #fff;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
