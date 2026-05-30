@@ -14,11 +14,28 @@ export const Header = styled.div`
   background: #3d2c6b;
 `;
 
+
 export const Content = styled.div`
   flex: 1;
+
   display: flex;
   gap: 8px;
+
   padding: 8px;
+`;
+
+export const GameArea = styled.div`
+  flex: 1;
+  background: #4b3a7a;
+
+  position: relative; 
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 72px;
+  font-weight: bold;
 `;
 
 export const BetsPanel = styled.div`

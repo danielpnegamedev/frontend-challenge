@@ -1,6 +1,6 @@
 import * as S from "./styles";
 
-export function BetControls() {
+export function Controls() {
   // Dica profissional: Estados de controle de valor entrariam aqui futuramente
   // const [amount, setAmount] = useState(1.00);
 

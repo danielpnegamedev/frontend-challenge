@@ -5,85 +5,41 @@ export const Wrapper = styled.div`
   height: 70px;
   background: #5b4b8a;
   border-radius: 12px;
+
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-export const LeftControls = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-export const AmountSelector = styled.div`
-  display: flex;
-  align-items: center;
-  height: 50px;
-  overflow: hidden;
-  border-radius: 8px;
-`;
-
-export const AmountBtn = styled.button`
-  width: 40px;
-  height: 40%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  background: #9f8cff;
-  color: #1f1447;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-`;
-
-export const AmountValue = styled.div`
-  height: 40%;
-  width: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0d0f4d;
+export const CrashText = styled.p`
+  margin: 0;
   color: white;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
 `;
 
-export const BetValuesGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+export const HistoryBarContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px; /* Altura da barra */
+  background: #33265c; 
+  
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
   gap: 8px;
+  
+  box-sizing: border-box;
 `;
 
-export const BetValueBtn = styled.button`
-  width: 60px;
-  height: 20px;
-  background: transparent;
+export const MultiplierBadge = styled.span`
+  background: #5b4b8a;
   color: white;
-  border: 1px solid white;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: white;
-    color: black;
-  }
-`;
-
-export const PlaceBetBtn = styled.button`
-  margin-left: 16px;
-  width: 180px;
-  height: 50px;
-  background: #39ff14;
-  color: black;
-  border: none;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
 `;

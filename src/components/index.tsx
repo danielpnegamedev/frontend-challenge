@@ -1,6 +1,8 @@
 import * as S from "./styles";
 
-import { BetControls } from "./Controls";
+import { Crash } from "./Crash";
+import { Controls } from "./Controls";
+
 
 export function Layout() {
   return (
@@ -10,15 +12,17 @@ export function Layout() {
       <S.Header />
 
       <S.Content>
-        <S.BetsPanel />
-        {/* SEM O "S.", pois é um componente React completo */}
-      
+        <S.BetsPanel/>  
+          
+        <S.GameArea>  
+                <Crash />
+        </S.GameArea>
       </S.Content>
 
       <S.BottomPanel>
-        {/* SEM O "S.", pois veio do import da linha 4 */}
-        <BetControls />
+        <Controls />
       </S.BottomPanel>
+
     </S.Container>
   );
 }
