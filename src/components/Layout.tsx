@@ -115,11 +115,59 @@ const BetValueBtn = styled.button`
   &:hover {
     background: white;
     color: black;
-  }
+  }`;
+
+
+
+
+const AmountSelector = styled.div`
+  display: flex;
+  align-items: center;
+  height: 50px;
+  overflow: hidden;
+  border-radius: 8px;
 `;
 
+const AmountBtn = styled.button`
+  width: 40px;
+  height: 40%;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
+  border: none;
+  background: #9f8cff;
+  color: #1f1447;
+
+  font-size: 24px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  padding: 0;
+  line-height: 1;
+`;
+
+const AmountValue = styled.div`
+height: 40%;
+width: 100px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #0d0f4d;
+  color: white;
+
+  font-size: 24px;
+  font-weight: bold;
+`;
+const LeftControls = styled.div`
+  display: flex;
+  flex-direction: column;
+
+`;
 
 export function Layout() {
   return (
@@ -136,12 +184,22 @@ export function Layout() {
 
       <BottomPanel>
         <BetControls >
-           <BetValuesGrid>
-              <BetValueBtn> $1 </BetValueBtn>
-              <BetValueBtn> $5 </BetValueBtn>
-              <BetValueBtn> $10 </BetValueBtn>
-              <BetValueBtn> $20 </BetValueBtn>
-  </BetValuesGrid>
+           <LeftControls>
+    <AmountSelector>
+      <AmountBtn>-</AmountBtn>
+      <AmountValue>$1.00</AmountValue>
+      <AmountBtn>+</AmountBtn>
+    </AmountSelector>
+
+    <BetValuesGrid>
+      <BetValueBtn>$1</BetValueBtn>
+      <BetValueBtn>$5</BetValueBtn>
+      <BetValueBtn>$10</BetValueBtn>
+      <BetValueBtn>$20</BetValueBtn>
+    </BetValuesGrid>
+  </LeftControls>
+
+
             <PlaceBetBtn> BET </PlaceBetBtn>
          </BetControls>
       </BottomPanel>
