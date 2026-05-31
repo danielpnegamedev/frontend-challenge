@@ -91,7 +91,7 @@ export function Controls() {
   // O texto do label segue a mesma regra: se estiver esperando, exibe "PLACEBET"
   const label =
     buttonStatus === "placebet"
-      ? "PLACEBET"
+      ? "PLACE BET"
       : buttonStatus === "cancel"
       ? "CANCEL"
       : buttonStatus === "cashout"

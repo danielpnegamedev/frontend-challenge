@@ -44,6 +44,7 @@ export const BetsPanel = styled.div`
 `;
 
 export const BottomPanel = styled.div`
+  width: 100%; /* Garante que o painel de baixo use toda a largura disponível */
   height: 120px;
   background: #3d2c6b;
   display: flex;

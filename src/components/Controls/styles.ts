@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  width: 400px;
-  height: 70px;
+  width: 500px;
+  height: 100px;
   background: #5b4b8a;
-  border-radius: 12px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,6 +62,7 @@ export const BetValuesGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
+  
 `;
 
 export const BetValueBtn = styled.button`
@@ -92,7 +93,8 @@ export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'casho
   margin-left: 16px;
   width: 180px;
   height: 70px;
-  border: none;
+  border: 2px solid #ffffff; 
+  box-sizing: border-box; 
   border-radius: 8px;
   display: flex;
   flex-direction: column;
@@ -100,16 +102,14 @@ export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'casho
   align-items: center;
   cursor: pointer;
   
-  /* Mantém apenas as cores originais dos botões */
   background: ${({ variant }) =>
     variant === 'place' ? '#39ff14' :
     variant === 'cancel' ? '#ff4d4d' : '#ffd700'};
   
   color: black;
-  font-weight: bold;
+
   transition: opacity 0.3s ease, transform 0.1s ease;
 
-  /* Quando o estado for waiting, ele simplesmente aplica a opacidade e bloqueia eventos */
   ${({ isWaiting }) => isWaiting && `
     opacity: 0.45;
     pointer-events: none;
@@ -123,7 +123,7 @@ export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'casho
 
 export const PlaceBetLabel = styled.div`
   font-size: 16px;
-  font-weight: bold;
+
   text-transform: uppercase;
 `;
 
