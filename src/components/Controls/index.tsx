@@ -94,8 +94,7 @@ export function Controls() {
       ? "CASHOUT"
       : "WAITING...";
 
-  const isBettingPhase =
-    buttonStatus === "placebet" || buttonStatus === "cancel";
+ const isBettingPhase = buttonStatus === "placebet";
 
   return (
     <S.Wrapper>
