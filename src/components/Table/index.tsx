@@ -7,26 +7,22 @@ export function Table() {
   const [bets, setBets] = useState<IBetDTO[]>([]);
 
   useEffect(() => {
-    // Conecta ao WebSocket para receber a lista de apostas em tempo real
     connectWebSocket((message) => {
-      // 1. Quando o usuário entra, o servidor envia um evento do tipo 'sync'
+
       if (message?.type === "sync" && message?.gameState?.bets) {
         setBets(message.gameState.bets);
       } 
-      // 2. Durante o jogo, o servidor envia o estado atualizado com as apostas em data.bets
+
       else if (message?.data?.bets) {
         setBets(message.data.bets);
       }
       
-      // 3. Se o jogo resetar na fase de betting, o servidor limpa as apostas lá no backend, 
-      // mas garantimos que a tabela limpe aqui no front também se necessário
       if (message?.data?.phase === "betting" && (!message.data.bets || message.data.bets.length === 0)) {
         setBets([]);
       }
     });
   }, []);
 
-  // Função auxiliar para formatar dinheiro
   const formatMoney = (value: number) => `$${value.toFixed(2)}`;
 
   return (
@@ -50,24 +46,19 @@ export function Table() {
             </S.TableRow>
           ) : (
             bets.map((bet, index) => {
-              // Se o player já fez cashout, ele terá um 'prize' (prêmio) calculado pelo servidor
               const hasCashedOut = bet.prize && bet.prize > 0;
 
               return (
                 <S.TableRow key={bet.userId + index}>
-                  {/* Nome do usuário */}
                   <S.TableCell>{bet.userId}</S.TableCell>
                   
-                  {/* Valor que ele apostou */}
                   <S.TableCell>{formatMoney(bet.amount)}</S.TableCell>
                   
-                  {/* Multiplicador do Cashout (se ele saiu do jogo) ou '-' se ainda está correndo */}
                   <S.TableCell>
                     {hasCashedOut ? `${(bet.prize / bet.amount).toFixed(2)}x` : "-"}
                   </S.TableCell>
-                  
-                  {/* Quanto ele ganhou, mudando de cor se ganhou */}
-                  <S.TableCell style={{ color: hasCashedOut ? "#10b981" : "#2b2150", fontWeight: hasCashedOut ? 700 : 400 }}>
+
+                  <S.TableCell style={{ color: hasCashedOut ? "#10b981" : "#cac6d8", fontWeight: hasCashedOut ? 700 : 400 }}>
                     {hasCashedOut ? formatMoney(bet.prize) : "Jogando..."}
                   </S.TableCell>
                 </S.TableRow>

@@ -2,7 +2,7 @@
 import { connectWebSocket, sendBet, sendCashout, sendCancelBet } from "../../game/websocket";
 import { useEffect, useRef, useState } from "react";
 
-// Mantemos os estados literais para o fluxo lógico
+
 type ButtonStatus = "placebet" | "cancel" | "cashout" | "waiting";
 const USER_ID = "user123";
 
@@ -32,7 +32,6 @@ export function Controls() {
           break;
 
         case "running":
-          // Se ele apostou, vira CASHOUT. Se não apostou nesta rodada, fica WAITING (mas com visual de placebet opaco)
           setButtonStatus(betPlacedRef.current ? "cashout" : "waiting");
           break;
 
@@ -76,9 +75,7 @@ export function Controls() {
     }
   };
 
-  // --- REGRAS VISUAIS CUSTOMIZADAS (SEM O ESTADO VISUAL 'WAITING') ---
 
-  // Se o status for "waiting", o visual de fundo volta a ser o de "place" (ou mantém o último se preferir)
   const variant =
     buttonStatus === "placebet"
       ? "place"
@@ -86,9 +83,9 @@ export function Controls() {
       ? "cancel"
       : buttonStatus === "cashout"
       ? "cashout"
-      : "place"; // Quando em waiting, ele renderiza o design verde de aposta
+      : "place"; 
 
-  // O texto do label segue a mesma regra: se estiver esperando, exibe "PLACEBET"
+
   const label =
     buttonStatus === "placebet"
       ? "PLACE BET"
@@ -96,9 +93,8 @@ export function Controls() {
       ? "CANCEL"
       : buttonStatus === "cashout"
       ? "CASHOUT"
-      : "PLACEBET"; // Mantém o texto em vez de "WAITING..."
+      : "PLACE BET"; 
 
-  // O botão só aceita cliques e interações nas fases ativas
   const isWaiting = buttonStatus === "waiting";
   const isBettingPhase = buttonStatus === "placebet";
 
@@ -162,7 +158,6 @@ export function Controls() {
         </S.BetValuesGrid>
       </S.LeftControls>
 
-      {/* Passamos a propriedade booleana `isWaiting` para o estilo cuidar do fade */}
       <S.PlaceBetBtn 
         variant={variant} 
         onClick={handleButtonClick} 
