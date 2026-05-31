@@ -7,47 +7,65 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
   color: white;
+  overflow: hidden;
 `;
 
 export const Header = styled.div`
   height: 60px;
-  background: #3d2c6b;
+  flex-shrink: 0;
 `;
-
 
 export const Content = styled.div`
   flex: 1;
-
   display: flex;
   gap: 10px;
-
   padding: 8px;
-`;
+  overflow: hidden;
 
-export const GameArea = styled.div`
-  flex: 1;
-  background: #4b3a7a;
-
-  position: relative; 
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 72px;
-  font-weight: bold;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 4px;
+    gap: 4px;
+  }
 `;
 
 export const BetsPanel = styled.div`
   width: 300px;
   background: #4b3a7a;
+  border-radius: 8px;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 180px;
+    order: 2;
+  }
+`;
+
+export const GameArea = styled.div`
+  flex: 1;
+  background: #4b3a7a;
+  border-radius: 8px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    min-height: 0;
+    order: 1;
+  }
 `;
 
 export const BottomPanel = styled.div`
-  width: 100%; /* Garante que o painel de baixo use toda a largura disponível */
   height: 120px;
-  background: #3d2c6b;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #3d2c6b;
+
+  @media (max-width: 768px) {
+    height: auto;
+    padding: 12px;
+  }
 `;
