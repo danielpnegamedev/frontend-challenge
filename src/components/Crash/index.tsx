@@ -2,7 +2,15 @@ import { useEffect, useState } from 'react';
 import * as S from "./styles";
 import { connectWebSocket } from "../../game/websocket";
 
-
+const getColorFromNumber = (num: number) => {
+  const seed = Math.floor(num * 12345);
+  
+  const h = seed % 1000;
+  const s = 100; 
+  const l = 65;  
+  
+  return `hsl(${h}, ${s}%, ${l}%)`;
+};
 export function Crash() {
   const [multiplier, setMultiplier] = useState(1);
   const [history, setHistory] = useState<number[]>([]);
@@ -29,17 +37,18 @@ export function Crash() {
 
   return (
     <S.Wrapper>
-
       <S.HistoryBarContainer>
         {historyBadges.map((value, index) => (
-          <S.MultiplierBadge key={index}>
+          <S.MultiplierBadge 
+            key={index} 
+            bgColor={value != null ? getColorFromNumber(value) : undefined}
+          >
             {value != null ? value.toFixed(2) : "-"}
           </S.MultiplierBadge>
         ))}
       </S.HistoryBarContainer>
 
       <S.CrashText>{multiplier.toFixed(2)}x</S.CrashText>
-     
     </S.Wrapper>
   );
 }
