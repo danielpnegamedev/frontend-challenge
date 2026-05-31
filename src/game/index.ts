@@ -1,4 +1,4 @@
-import { AnimatedSprite, Text, Assets } from 'pixi.js';
+import { Assets } from 'pixi.js';
 import { stall } from '../utils/staller';
 
 

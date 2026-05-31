@@ -1,9 +1,9 @@
 let ws: WebSocket | null = null;
 let gameState: any = null;
-let messageCallback: ((msg: any) => void) | null = null;
+
 
 export function connectWebSocket(onMessage: (msg: any) => void) {
-  messageCallback = onMessage;
+
   ws = new WebSocket('ws://localhost:8080');
 
   ws.onopen = () => {
