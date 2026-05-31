@@ -60,14 +60,25 @@ function sendBetAddedEvent(userId, value) {
 }
 
 function handleClientMessage(message) {
-  const { type, data: {userId, value, cashoutAt} } = message;
+  const { type, data: { userId, value, cashoutAt } } = message;
 
   switch (type) {
     case 'bet':
       if (gameState.phase === 'betting' && userId && value > 0) {
-        gameState.bets.push({ userId, amount: value, cashoutAt });
+        const jáTemAposta = gameState.bets.some(b => b.userId === userId);
+        if (!jáTemAposta) {
+          gameState.bets.push({ userId, amount: value, cashoutAt });
+          broadcastGameState();
+          sendBetAddedEvent(userId, value);
+        }
+      }
+      break;
+
+    case 'cancel-bet':
+      if (gameState.phase === 'betting' && userId) {
+        gameState.bets = gameState.bets.filter(bet => bet.userId !== userId);
+        console.log(`Aposta do usuário ${userId} foi cancelada.`);
         broadcastGameState();
-        sendBetAddedEvent(userId, value);
       }
       break;
 

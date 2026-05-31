@@ -37,7 +37,7 @@ export function Table() {
             <S.TableHeaderCell>User</S.TableHeaderCell>
             <S.TableHeaderCell>Bet USD</S.TableHeaderCell>
             <S.TableHeaderCell>Multiplier</S.TableHeaderCell>
-            <S.TableHeaderCell>Payout / Profit</S.TableHeaderCell>
+            <S.TableHeaderCell>Bet</S.TableHeaderCell>
           </S.TableRow>
         </S.TableHead>
 

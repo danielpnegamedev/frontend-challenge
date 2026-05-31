@@ -43,4 +43,8 @@ export function getGameState(): IGameEvent | null {
     return gameState;
 }
 
+export function sendCancelBet(userId: string) {
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    ws.send(JSON.stringify({ type: 'cancel-bet', data: { userId } }));
+}
 

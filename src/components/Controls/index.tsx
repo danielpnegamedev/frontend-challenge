@@ -1,5 +1,5 @@
 ﻿import * as S from "./styles";
-import { connectWebSocket, sendBet, sendCashout } from "../../game/websocket";
+import { connectWebSocket, sendBet, sendCashout, sendCancelBet } from "../../game/websocket";
 import { useEffect, useRef, useState } from "react";
 
 type ButtonStatus = "placebet" | "cancel" | "cashout" | "waiting";
@@ -60,7 +60,7 @@ export function Controls() {
 
     if (buttonStatus === "cancel") {
       
-
+      sendCancelBet(USER_ID);
       setBetPlaced(false);
       betPlacedRef.current = false;
       setButtonStatus("placebet");
