@@ -18,7 +18,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "styled-components": "^6.4.2",
-    "ws": "^8.18.1"
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
@@ -39,5 +39,18 @@
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
     "vitest": "^3.0.9"
-  }
+  },
+  "description": "We are going to build a simple game using React as the UI framework and Pixi.js as the rendering engine.",
+  "main": "crash-server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielpnegamedev/frontend-challenge.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danielpnegamedev/frontend-challenge/issues"
+  },
+  "homepage": "https://github.com/danielpnegamedev/frontend-challenge#readme"
 }

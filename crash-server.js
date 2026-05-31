@@ -1,234 +1,84 @@
+import http from 'http';
 import { WebSocketServer } from 'ws';
 
-// Game state
+const PORT = process.env.PORT || 8080;
+
+// HTTP Server (necessário para o Render)
+const server = http.createServer();
+
+const wss = new WebSocketServer({
+  server
+});
+
+server.listen(PORT, () => {
+  console.log(`Crash game server running on port ${PORT}`);
+});
+
+// ========================
+// GAME STATE
+// ========================
+
 const gameState = {
-  phase: 'init', // BETTING or RUNNING
-  multiplier: 1.00,
+  phase: 'init',
+  multiplier: 1.0,
   crashPoint: 0,
   nextGameAt: 0,
-  bets: [], // userId -> {amount, cashoutAt}
+  bets: [],
   history: []
 };
 
-// Constants
-const BETTING_PHASE_DURATION = 5000; // 5 seconds
-const TICK_INTERVAL = 100; // 100ms
+const connectedUsers = new Set();
+
+const BETTING_PHASE_DURATION = 5000;
+const TICK_INTERVAL = 100;
 const MULTIPLIER_INCREMENT = 0.01;
-const MAX_MULTIPLIER = 3; // For simplicity, limit the max multiplier
+const MAX_MULTIPLIER = 3;
 
-// Initialize WebSocket server
-const wss = new WebSocketServer({ port: 8080 });
-console.log('Crash game server running on port 8080');
-
-// Game loop timers
 let bettingTimer = null;
 let runningTimer = null;
 
-// Start the game cycle
+// ========================
+// GAME START
+// ========================
+
 startBettingPhase();
 
-wss.on('connection', function connection(ws, req) {
+// ========================
+// CONNECTIONS
+// ========================
+
+wss.on('connection', (ws) => {
   console.log('Client connected');
 
-  // Send sync event with current game state
-  sendSyncEvent(ws);
-
-  // Handle messages from clients
-  ws.on('message', function message(data) {
-    try {
-      const message = JSON.parse(data);
-      console.log(message)
-      handleClientMessage(message);
-    } catch (error) {
-      console.error('Error processing message:', error);
-    }
-  });
-
-  // Handle disconnection
-  ws.on('close', function () {
-    console.log('Client disconnected');
-  });
-});
-
-function sendBetAddedEvent(userId, value) {
-  wss.clients.forEach((client) => {
-      client.send(JSON.stringify({ type: 'bet-added',data: {
-        userId, 
-        value
-      }}));
-  });
-}
-
-
-
-
-function handleClientMessage(message) {
-  const { type, data: { userId, value, cashoutAt } } = message;
-
-  switch (type) {
-    case 'bet':
-      if (gameState.phase === 'betting' && userId && value > 0) {
-        const alreadyBet = gameState.bets.some(b => b.userId === userId);
-        if (!alreadyBet) {
-          gameState.bets.push({ userId, amount: value, cashoutAt });
-          broadcastGameState();
-          sendBetAddedEvent(userId, value);
-        }
-      }
-      break;
-
-    case 'cancel-bet':
-      if (gameState.phase === 'betting' && userId) {
-        gameState.bets = gameState.bets.filter(bet => bet.userId !== userId);
-        console.log(`Aposta do usuário ${userId} foi cancelada.`);
-        broadcastGameState();
-      }
-      break;
-
-    case 'cashout':
-      const userBet = gameState.bets.find(u => u.userId == userId)
-      if (gameState.phase === 'running' && userBet) {
-        if(!userBet) return null;
-        userBet.prize = userBet.amount * gameState.multiplier;
-        broadcastGameState();
-      }
-      break;
-  }
-}
-
-function sendSyncEvent(ws) {
-  const syncData = {
-    type: 'sync',
-    gameState: {
-      phase: gameState.phase,
-      multiplier: gameState.multiplier,
-      nextGameAt: gameState.nextGameAt,
-      history: gameState.history.slice(-10), // Last 10 games
-      bets: gameState.bets
-    }
-  };
-
-  ws.send(JSON.stringify(syncData));
-}
-
-function broadcastGameState() {
-  const stateUpdate = {
-    type: gameState.phase,
-    data: {
-      phase: gameState.phase,
-      multiplier: gameState.multiplier,
-      nextGameAt: gameState.phase === 'betting' ? gameState.nextGameAt : null,
-      bets: gameState.bets,
-      history: gameState.history,
-    }
-  };
-
-  wss.clients.forEach(client => {
-    if (client.readyState === 1) { // OPEN
-      client.send(JSON.stringify(stateUpdate));
-    }
-  });
-}
-
-function startBettingPhase() {
-  // Reset game state
-  gameState.phase = 'betting';
-  gameState.multiplier = 1.00;
-  gameState.bets = [];
-
-  // Calculate next game time
-  gameState.nextGameAt = Date.now() + BETTING_PHASE_DURATION;
-
-  // Generate random crash point (between 1.00 and MAX_MULTIPLIER)
-  gameState.crashPoint = 1 + Math.random() * (MAX_MULTIPLIER - 1);
-
-  // Broadcast the new game state
-  broadcastGameState();
-
-  // Schedule the start of the running phase
-  bettingTimer = setTimeout(() => {
-    startRunningPhase();
-  }, BETTING_PHASE_DURATION);
-}
-
-function startRunningPhase() {
-  gameState.phase = 'running';
-  broadcastGameState();
-
-  // Start the multiplier ticker
-  runningTimer = setInterval(() => {
-    // Increase multiplier
-    gameState.multiplier += MULTIPLIER_INCREMENT;
-    gameState.multiplier = parseFloat(gameState.multiplier.toFixed(2));
-
-    // Broadcast updated multiplier
-    gameState.bets.forEach((bet) => {
-      if (bet.cashoutAt === gameState.multiplier) {
-        bet.prize = bet.amount * gameState.multiplier;
-      }
-    });
-
-    broadcastGameState();
-
-    // Check if we've reached the crash point
-    if (gameState.multiplier >= gameState.crashPoint) {
-      // Game crashed
-      clearInterval(runningTimer);
-
-      // Record in history
-      gameState.history.push({
-        crashPoint: gameState.multiplier,
-        timestamp: Date.now()
-      });
-
-      gameState.phase = 'crash'
-
-      // Notify clients about crash
-      broadcastGameState();
-
-      // Start a new game after a short delay
-      setTimeout(() => {
-        startBettingPhase();
-      }, 3000);
-    }
-  }, TICK_INTERVAL);
-}
-
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-  console.log('Shutting down server...');
-  clearTimeout(bettingTimer);
-  clearInterval(runningTimer);
-  wss.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
-});
-
-
-
-// Track connected users for online count
-const connectedUsers = new Set();
-
-wss.on('connection', function connection(ws) {
   ws.userId = null;
 
-  ws.on('message', function message(data) {
+  sendSyncEvent(ws);
+
+  ws.on('message', (data) => {
     try {
-      const message = JSON.parse(data);
+      const message = JSON.parse(data.toString());
+
       if (message.type === 'identify') {
         ws.userId = message.userId;
-        connectedUsers.add(ws.userId);
-        broadcastOnlineCount();
-      } else {
-        handleClientMessage(message);
+
+        if (ws.userId) {
+          connectedUsers.add(ws.userId);
+          broadcastOnlineCount();
+        }
+
+        return;
       }
-    } catch (e) {
-      console.error(e);
+
+      handleClientMessage(message);
+
+    } catch (error) {
+      console.error('Message error:', error);
     }
   });
 
-  ws.on('close', function () {
+  ws.on('close', () => {
+    console.log('Client disconnected');
+
     if (ws.userId) {
       connectedUsers.delete(ws.userId);
       broadcastOnlineCount();
@@ -236,10 +86,227 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-function broadcastOnlineCount() {
-  const count = connectedUsers.size;
-  const message = JSON.stringify({ type: 'online-count', count });
-  wss.clients.forEach(client => {
-    if (client.readyState === 1) client.send(message);
+// ========================
+// MESSAGE HANDLER
+// ========================
+
+function handleClientMessage(message) {
+  const type = message?.type;
+  const userId = message?.data?.userId;
+  const value = message?.data?.value;
+  const cashoutAt = message?.data?.cashoutAt;
+
+  switch (type) {
+    case 'bet':
+      if (
+        gameState.phase === 'betting' &&
+        userId &&
+        value > 0
+      ) {
+        const alreadyBet = gameState.bets.some(
+          (b) => b.userId === userId
+        );
+
+        if (!alreadyBet) {
+          gameState.bets.push({
+            userId,
+            amount: value,
+            cashoutAt
+          });
+
+          broadcastGameState();
+          sendBetAddedEvent(userId, value);
+        }
+      }
+      break;
+
+    case 'cancel-bet':
+      if (
+        gameState.phase === 'betting' &&
+        userId
+      ) {
+        gameState.bets = gameState.bets.filter(
+          (bet) => bet.userId !== userId
+        );
+
+        broadcastGameState();
+      }
+      break;
+
+    case 'cashout':
+      const userBet = gameState.bets.find(
+        (u) => u.userId === userId
+      );
+
+      if (
+        gameState.phase === 'running' &&
+        userBet &&
+        !userBet.prize
+      ) {
+        userBet.prize =
+          userBet.amount * gameState.multiplier;
+
+        broadcastGameState();
+      }
+      break;
+  }
+}
+
+// ========================
+// EVENTS
+// ========================
+
+function sendBetAddedEvent(userId, value) {
+  const payload = JSON.stringify({
+    type: 'bet-added',
+    data: {
+      userId,
+      value
+    }
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(payload);
+    }
   });
 }
+
+function sendSyncEvent(ws) {
+  ws.send(
+    JSON.stringify({
+      type: 'sync',
+      gameState: {
+        phase: gameState.phase,
+        multiplier: gameState.multiplier,
+        nextGameAt: gameState.nextGameAt,
+        history: gameState.history.slice(-10),
+        bets: gameState.bets
+      }
+    })
+  );
+}
+
+function broadcastOnlineCount() {
+  const payload = JSON.stringify({
+    type: 'online-count',
+    count: connectedUsers.size
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(payload);
+    }
+  });
+}
+
+function broadcastGameState() {
+  const payload = JSON.stringify({
+    type: gameState.phase,
+    data: {
+      phase: gameState.phase,
+      multiplier: gameState.multiplier,
+      nextGameAt:
+        gameState.phase === 'betting'
+          ? gameState.nextGameAt
+          : null,
+      bets: gameState.bets,
+      history: gameState.history
+    }
+  });
+
+  wss.clients.forEach((client) => {
+    if (client.readyState === 1) {
+      client.send(payload);
+    }
+  });
+}
+
+// ========================
+// GAME LOOP
+// ========================
+
+function startBettingPhase() {
+  gameState.phase = 'betting';
+  gameState.multiplier = 1.0;
+  gameState.bets = [];
+
+  gameState.nextGameAt =
+    Date.now() + BETTING_PHASE_DURATION;
+
+  gameState.crashPoint =
+    1 + Math.random() * (MAX_MULTIPLIER - 1);
+
+  broadcastGameState();
+
+  bettingTimer = setTimeout(() => {
+    startRunningPhase();
+  }, BETTING_PHASE_DURATION);
+}
+
+function startRunningPhase() {
+  gameState.phase = 'running';
+
+  broadcastGameState();
+
+  runningTimer = setInterval(() => {
+    gameState.multiplier += MULTIPLIER_INCREMENT;
+
+    gameState.multiplier = Number(
+      gameState.multiplier.toFixed(2)
+    );
+
+    gameState.bets.forEach((bet) => {
+      if (
+        !bet.prize &&
+        bet.cashoutAt === gameState.multiplier
+      ) {
+        bet.prize =
+          bet.amount * gameState.multiplier;
+      }
+    });
+
+    broadcastGameState();
+
+    if (
+      gameState.multiplier >=
+      gameState.crashPoint
+    ) {
+      clearInterval(runningTimer);
+
+      gameState.history.push({
+        crashPoint: gameState.multiplier,
+        timestamp: Date.now()
+      });
+
+      if (gameState.history.length > 50) {
+        gameState.history.shift();
+      }
+
+      gameState.phase = 'crash';
+
+      broadcastGameState();
+
+      setTimeout(() => {
+        startBettingPhase();
+      }, 3000);
+    }
+  }, TICK_INTERVAL);
+}
+
+// ========================
+// SHUTDOWN
+// ========================
+
+process.on('SIGINT', () => {
+  console.log('Shutting down...');
+
+  clearTimeout(bettingTimer);
+  clearInterval(runningTimer);
+
+  wss.close(() => {
+    server.close(() => {
+      process.exit(0);
+    });
+  });
+});
