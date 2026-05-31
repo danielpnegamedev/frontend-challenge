@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import * as S from "./styles";
 import { connectWebSocket } from "../../game/websocket";
-import { initGame, updateMultiplierText } from '../../game';
+import { initGame, updateMultiplierText, setSpinning } from '../../game';
 
 const getColorFromNumber = (num: number) => {
   const seed = Math.floor(num * 12345);
@@ -37,8 +37,16 @@ export function Crash() {
   }, [multiplier]);
 
   useEffect(() => {
-    connectWebSocket((message) => {
+    connectWebSocket((message: any) => {
+      const phase = message?.data?.phase;
       const value = message?.data?.multiplier;
+
+      if (phase === 'running') {
+        setSpinning(true);
+      } else {
+        setSpinning(false);
+      }
+
       if (typeof value === "number") setMultiplier(value);
 
       const serverHistory = message?.data?.history;

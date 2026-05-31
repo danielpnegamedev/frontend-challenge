@@ -5,6 +5,16 @@ let spinningTopSprite: AnimatedSprite;
 let multiplierText: Text;
 let gameContainer: Container;
 
+export function setSpinning(isSpinning: boolean) {
+    if (!spinningTopSprite) return;
+    if (isSpinning) {
+        if (!spinningTopSprite.playing) spinningTopSprite.play();
+    } else {
+        spinningTopSprite.stop();
+        spinningTopSprite.gotoAndStop(0);
+    }
+}
+
 export function updateMultiplierText(value: number) {
     if (multiplierText) {
         multiplierText.text = `${value.toFixed(2)}x`;
@@ -40,7 +50,7 @@ export async function initGame(container: HTMLDivElement) {
     spinningTopSprite.anchor.set(0.5);
     spinningTopSprite.scale.set(0.7);
     spinningTopSprite.y = 80;
-    spinningTopSprite.play();
+    spinningTopSprite.gotoAndStop(0);
     gameContainer.addChild(spinningTopSprite);
 
     const textStyle = new TextStyle({
