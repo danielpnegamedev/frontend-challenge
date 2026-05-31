@@ -3,13 +3,14 @@ import * as S from "./styles";
 import { Crash } from "./Crash";
 import { Controls } from "./Controls";
 import { Table }  from "./Table";
+import { Header } from "./Header";
 
 export function Layout() {
   return (
     
     <S.Container>
 
-      <S.Header />
+      <Header />
 
       <S.Content>
       

@@ -14,7 +14,7 @@ const gameState = {
 const BETTING_PHASE_DURATION = 5000; // 5 seconds
 const TICK_INTERVAL = 100; // 100ms
 const MULTIPLIER_INCREMENT = 0.01;
-const MAX_MULTIPLIER = 2; // For simplicity, limit the max multiplier
+const MAX_MULTIPLIER = 3; // For simplicity, limit the max multiplier
 
 // Initialize WebSocket server
 const wss = new WebSocketServer({ port: 8080 });
@@ -58,6 +58,9 @@ function sendBetAddedEvent(userId, value) {
       }}));
   });
 }
+
+
+
 
 function handleClientMessage(message) {
   const { type, data: { userId, value, cashoutAt } } = message;
@@ -201,3 +204,42 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
+
+
+
+// Track connected users for online count
+const connectedUsers = new Set();
+
+wss.on('connection', function connection(ws) {
+  ws.userId = null;
+
+  ws.on('message', function message(data) {
+    try {
+      const message = JSON.parse(data);
+      if (message.type === 'identify') {
+        ws.userId = message.userId;
+        connectedUsers.add(ws.userId);
+        broadcastOnlineCount();
+      } else {
+        handleClientMessage(message);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  });
+
+  ws.on('close', function () {
+    if (ws.userId) {
+      connectedUsers.delete(ws.userId);
+      broadcastOnlineCount();
+    }
+  });
+});
+
+function broadcastOnlineCount() {
+  const count = connectedUsers.size;
+  const message = JSON.stringify({ type: 'online-count', count });
+  wss.clients.forEach(client => {
+    if (client.readyState === 1) client.send(message);
+  });
+}
