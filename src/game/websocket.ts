@@ -4,21 +4,39 @@ let messageCallback: ((msg: any) => void) | null = null;
 
 export function connectWebSocket(onMessage: (msg: any) => void) {
   messageCallback = onMessage;
-  ws = new WebSocket('ws://localhost:8080');
+
+  ws = new WebSocket(
+    'wss://frontend-challenge-fxc2.onrender.com'
+  );
 
   ws.onopen = () => {
     let userId = localStorage.getItem('game_user_id');
+
     if (!userId) {
-      userId = 'user_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('game_user_id', userId);
+      userId =
+        'user_' +
+        Math.random().toString(36).substr(2, 9);
+
+      localStorage.setItem(
+        'game_user_id',
+        userId
+      );
     }
-    ws?.send(JSON.stringify({ type: 'identify', userId }));
+
+    ws?.send(
+      JSON.stringify({
+        type: 'identify',
+        userId
+      })
+    );
   };
 
   ws.onmessage = (event) => {
     try {
       const message = JSON.parse(event.data);
+
       gameState = message;
+
       onMessage(message);
     } catch (e) {
       console.error(e);
@@ -26,20 +44,53 @@ export function connectWebSocket(onMessage: (msg: any) => void) {
   };
 
   ws.onclose = () => {
-    setTimeout(() => connectWebSocket(onMessage), 3000);
+    console.log('WebSocket disconnected');
+
+    setTimeout(() => {
+      connectWebSocket(onMessage);
+    }, 3000);
+  };
+
+  ws.onerror = (error) => {
+    console.error('WebSocket error:', error);
   };
 }
 
-export function sendBet(userId: string, amount: number) {
-  ws?.send(JSON.stringify({ type: 'bet', data: { userId, value: amount } }));
+export function sendBet(
+  userId: string,
+  amount: number
+) {
+  ws?.send(
+    JSON.stringify({
+      type: 'bet',
+      data: {
+        userId,
+        value: amount
+      }
+    })
+  );
 }
 
 export function sendCashout(userId: string) {
-  ws?.send(JSON.stringify({ type: 'cashout', data: { userId } }));
+  ws?.send(
+    JSON.stringify({
+      type: 'cashout',
+      data: {
+        userId
+      }
+    })
+  );
 }
 
 export function sendCancelBet(userId: string) {
-  ws?.send(JSON.stringify({ type: 'cancel-bet', data: { userId } }));
+  ws?.send(
+    JSON.stringify({
+      type: 'cancel-bet',
+      data: {
+        userId
+      }
+    })
+  );
 }
 
 export function getGameState() {
