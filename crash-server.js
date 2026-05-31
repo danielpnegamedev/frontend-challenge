@@ -65,8 +65,8 @@ function handleClientMessage(message) {
   switch (type) {
     case 'bet':
       if (gameState.phase === 'betting' && userId && value > 0) {
-        const jáTemAposta = gameState.bets.some(b => b.userId === userId);
-        if (!jáTemAposta) {
+        const alreadyBet = gameState.bets.some(b => b.userId === userId);
+        if (!alreadyBet) {
           gameState.bets.push({ userId, amount: value, cashoutAt });
           broadcastGameState();
           sendBetAddedEvent(userId, value);

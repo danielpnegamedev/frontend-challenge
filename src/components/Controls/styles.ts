@@ -88,7 +88,7 @@ export const BetValueBtn = styled.button`
   }
 `;
 
-export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'cashout' | 'waiting' }>`
+export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'cashout'; isWaiting?: boolean }>`
   margin-left: 16px;
   width: 180px;
   height: 70px;
@@ -99,13 +99,26 @@ export const PlaceBetBtn = styled.button<{ variant?: 'place' | 'cancel' | 'casho
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  
+  /* Mantém apenas as cores originais dos botões */
   background: ${({ variant }) =>
     variant === 'place' ? '#39ff14' :
-    variant === 'cancel' ? '#ff4d4d' :
-    variant === 'cashout' ? '#ffd700' : '#9e9ea0'};
-  color: ${({ variant }) => (variant === 'waiting' ? '#666' : 'black')};
-  opacity: ${({ variant }) => (variant === 'waiting' ? 0.7 : 1)};
-  pointer-events: ${({ variant }) => (variant === 'waiting' ? 'none' : 'auto')};
+    variant === 'cancel' ? '#ff4d4d' : '#ffd700'};
+  
+  color: black;
+  font-weight: bold;
+  transition: opacity 0.3s ease, transform 0.1s ease;
+
+  /* Quando o estado for waiting, ele simplesmente aplica a opacidade e bloqueia eventos */
+  ${({ isWaiting }) => isWaiting && `
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+  `}
+
+  &:active {
+    transform: ${({ isWaiting }) => (isWaiting ? 'none' : 'scale(0.98)')};
+  }
 `;
 
 export const PlaceBetLabel = styled.div`

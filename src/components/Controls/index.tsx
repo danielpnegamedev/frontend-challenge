@@ -2,9 +2,9 @@
 import { connectWebSocket, sendBet, sendCashout, sendCancelBet } from "../../game/websocket";
 import { useEffect, useRef, useState } from "react";
 
+// Mantemos os estados literais para o fluxo lógico
 type ButtonStatus = "placebet" | "cancel" | "cashout" | "waiting";
 const USER_ID = "user123";
-
 
 export function Controls() {
   const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("waiting");
@@ -23,34 +23,35 @@ export function Controls() {
   };
 
   useEffect(() => {
-  connectWebSocket((message) => {
-  const phase = message?.data?.phase;
+    connectWebSocket((message) => {
+      const phase = message?.data?.phase;
 
-  switch (phase) {
-  case "betting":
-    setButtonStatus(betPlacedRef.current ? "cancel" : "placebet");
-    break;
+      switch (phase) {
+        case "betting":
+          setButtonStatus(betPlacedRef.current ? "cancel" : "placebet");
+          break;
 
-  case "running":
-    setButtonStatus(betPlacedRef.current ? "cashout" : "waiting");
-    break;
+        case "running":
+          // Se ele apostou, vira CASHOUT. Se não apostou nesta rodada, fica WAITING (mas com visual de placebet opaco)
+          setButtonStatus(betPlacedRef.current ? "cashout" : "waiting");
+          break;
 
-  case "crash":
-    setBetPlaced(false);
-    betPlacedRef.current = false;
-    setButtonStatus("waiting");
-    break;
+        case "crash":
+          setBetPlaced(false);
+          betPlacedRef.current = false;
+          setButtonStatus("waiting");
+          break;
 
-  case "bet-added":
-    console.log("Aposta registrada");
-    break;
-}
-});
+        case "bet-added":
+          console.log("Aposta registrada");
+          break;
+      }
+    });
   }, []);
 
   const handleButtonClick = () => {
     if (buttonStatus === "placebet") {
-       sendBet(USER_ID, amount);
+      sendBet(USER_ID, amount);
 
       setBetPlaced(true);
       betPlacedRef.current = true;
@@ -59,7 +60,6 @@ export function Controls() {
     }
 
     if (buttonStatus === "cancel") {
-      
       sendCancelBet(USER_ID);
       setBetPlaced(false);
       betPlacedRef.current = false;
@@ -68,7 +68,7 @@ export function Controls() {
     }
 
     if (buttonStatus === "cashout") {
-        sendCashout(USER_ID);
+      sendCashout(USER_ID);
 
       setBetPlaced(false);
       betPlacedRef.current = false;
@@ -76,6 +76,9 @@ export function Controls() {
     }
   };
 
+  // --- REGRAS VISUAIS CUSTOMIZADAS (SEM O ESTADO VISUAL 'WAITING') ---
+
+  // Se o status for "waiting", o visual de fundo volta a ser o de "place" (ou mantém o último se preferir)
   const variant =
     buttonStatus === "placebet"
       ? "place"
@@ -83,8 +86,9 @@ export function Controls() {
       ? "cancel"
       : buttonStatus === "cashout"
       ? "cashout"
-      : "waiting";
+      : "place"; // Quando em waiting, ele renderiza o design verde de aposta
 
+  // O texto do label segue a mesma regra: se estiver esperando, exibe "PLACEBET"
   const label =
     buttonStatus === "placebet"
       ? "PLACEBET"
@@ -92,9 +96,11 @@ export function Controls() {
       ? "CANCEL"
       : buttonStatus === "cashout"
       ? "CASHOUT"
-      : "WAITING...";
+      : "PLACEBET"; // Mantém o texto em vez de "WAITING..."
 
- const isBettingPhase = buttonStatus === "placebet";
+  // O botão só aceita cliques e interações nas fases ativas
+  const isWaiting = buttonStatus === "waiting";
+  const isBettingPhase = buttonStatus === "placebet";
 
   return (
     <S.Wrapper>
@@ -156,9 +162,15 @@ export function Controls() {
         </S.BetValuesGrid>
       </S.LeftControls>
 
-      <S.PlaceBetBtn variant={variant} onClick={handleButtonClick}>
+      {/* Passamos a propriedade booleana `isWaiting` para o estilo cuidar do fade */}
+      <S.PlaceBetBtn 
+        variant={variant} 
+        onClick={handleButtonClick} 
+        isWaiting={isWaiting}
+        disabled={isWaiting}
+      >
         <S.PlaceBetLabel>{label}</S.PlaceBetLabel>
-        {buttonStatus === "placebet" && (
+        {(buttonStatus === "placebet" || buttonStatus === "waiting") && (
           <S.PlaceBetAmount>{formatMoney(amount)}</S.PlaceBetAmount>
         )}
       </S.PlaceBetBtn>
