@@ -1,8 +1,7 @@
 import { AnimatedSprite, Text, Assets } from 'pixi.js';
 import { stall } from '../utils/staller';
 
-var spinningTopSprite: AnimatedSprite;
-var multiplierText: Text;
+
 
 (async () => {
     // Load assets

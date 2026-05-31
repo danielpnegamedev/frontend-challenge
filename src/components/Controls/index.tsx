@@ -9,6 +9,8 @@ const USER_ID = "user123";
 export function Controls() {
   const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("waiting");
   const [betPlaced, setBetPlaced] = useState(false);
+
+  console.log("Bet placed:", betPlaced, "Button status:", buttonStatus);
   const [amount, setAmount] = useState(1);
   const betPlacedRef = useRef(false);
 

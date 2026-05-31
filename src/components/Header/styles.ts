@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Menu, Wifi } from "lucide-react"; 
 
 export const HeaderContainer = styled.div`
   height: 60px;
