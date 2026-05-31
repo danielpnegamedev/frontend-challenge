@@ -1,13 +1,14 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  width: 400px;
-  height: 70px;
-  background: #5b4b8a;
+  width: 100%;
+  height: 100%;
+  background: #4b3a7a;
   border-radius: 12px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const CrashText = styled.p`
