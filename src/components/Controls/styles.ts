@@ -44,7 +44,7 @@ export const AmountBtn = styled.button`
   }
 `;
 
-export const AmountValue = styled.div`
+export const AmountValue = styled.div<{ disabled?: boolean }>`
   height: 40%;
   width: 100px;
   display: flex;
@@ -54,6 +54,8 @@ export const AmountValue = styled.div`
   color: white;
   font-size: 24px;
   font-weight: bold;
+  opacity: ${({ disabled }) => disabled ? 0.4 : 1};
+  transition: opacity 0.2s ease;
 `;
 
 export const BetValuesGrid = styled.div`
